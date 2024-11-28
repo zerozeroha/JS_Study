@@ -1,35 +1,60 @@
-/**파스칼 케이스로 직접 함수를 만들어 준다. */
-/**새로운 객체를 만드는 방식이다.라고 이해하기 */
-function User(firstName, lastName) {
-    this.firstName = firstName
-    this.lastName = lastName
+/** Getter, Setter */
+
+class User {
+    constructor(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = `${firstName} ${lastName}`;
+    }
+    getFullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
 }
 
-const user = new User("하영", "김")
-console.log(user);
+const user1 = new User("9Diin", "Park");
+console.log(user1);
 
-const user2 = new User("QLqL", "fdf")
-console.log(user2)
+user1.firstName = "Neo";
+console.log(user1);
 
-/** 객체 리터럴 방식을 통해서 만든 객체나 함수 내부에서 this라는 키원드의 속서을 만들고
- * new라는 키워드를 함께 호출해서 생성하는 객체 데이터는 같다고 볼 수 있다.
- * 방금 새롭게 작성한 내용보다는 객체리터럴 방식을 사용해서 객체를 만드는 것이 훨씬 편하기 때문에 객체 리터럴 방식을 많이 사용함.
+/** fullName은 수정되지 않은 걸 확인할 수 있는데
+ * 생성자 함수로 해당 클래스를 호출할 때, 최초로만 만들어지고 그 다음부터는 firstName과 lastName이 바뀌더라도 전혀 변화가 없는 상태과 됩니다.
  *
- * 그러나 위 방식의 장점이라고 하면 
- * getFullName이라는 메서드를 보다 효율적으로 사용기 위함임.
- * 
- * prototype을 통해 일반 함수를 할당해주면 되는데요, 주의할 점은 여기서 화살표 함수를 작성하면 안됩니다.
- * 왜냐하면, this라는 키워드의 정의가 달라지기 때문임.
+ * 이런 부분을 보완하기 위해서 메서드를 활용한다.
+ */
+console.log(user1.getFullName()); // Neo Park
+
+/** 함수를 호출하는 것을 좀 더 편리하게 쓰기 위해서 Getter이다.
+ * Getter는 값을 조회하는 용도의 메서드
  */
 
+class NewUser {
+    constructor(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    get fullName() {
+        /** 함수이므로 다양한 로직이 추가될 수 있다. */
+        console.log("Getting Full Name");
+        return `${this.firstName} ${this.lastName}`;
+    }
+    set fullName(value) {
+        /** fullName이라는 속성에다가 값을 지정할 때 동작하는 메서드 */
+        console.log(value); // Neo Kim
+        this.firstName = value.split(" ")[0];
+        this.lastName = value.split(" ")[1];
 
-
-User.prototype.getFullName = function () {
-    return `${this.firstName}${this.lastName}`
+        [this.firstName, this.lastName] = value.split(" ");
+    }
 }
-/**getFullName을 쓸 수 있는 구조가 되었습니다. */
+const user2 = new NewUser("9Diin", "Park");
+console.log(user2.fullName); // Output: "9Diin Park"
 
-console.log(user);
+user2.lastName = "Kim"; // Modify lastName directly
+console.log(user2.fullName); // Output: "9Diin Kim"
+
+/** set이라는 키워드를 통해서 만든 fullName이라는 메서드는
+ * 해당하는 fullName에다가 이렇게 할당 연산자를 통해서 어떤 값을 지정하려고 할 때 동작하는 메서드라는 점입니다.
+ */
+user2.fullName = "Neo Kim";
 console.log(user2);
-console.log(user.getFullName);
-console.log(user2.getFullName);
